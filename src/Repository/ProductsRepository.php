@@ -82,4 +82,8 @@ class ProductsRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findById($id): ?Products
+    {
+        return $this->find($id);
+    }
 }

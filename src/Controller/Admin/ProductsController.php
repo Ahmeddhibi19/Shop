@@ -84,8 +84,14 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/edition/{id}', name: 'edit')]
-    public function edit(Products $product, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, PictureService $pictureService): Response
+    public function edit(int $id, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, PictureService $pictureService): Response
     {
+
+        $product = $em->getRepository(Products::class)->findOneBy(['id' => $id]);
+
+        if (!$product) {
+            throw $this->createNotFoundException('product not found');
+        }
         // On vérifie si l'utilisateur peut éditer avec le Voter
         $this->denyAccessUnlessGranted('PRODUCT_EDIT', $product);
 
@@ -146,8 +152,13 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/suppression/{id}', name: 'delete')]
-    public function delete(Products $product): Response
+    public function delete(int $id,EntityManagerInterface $em): Response
     {
+        $product = $em->getRepository(Products::class)->findOneBy(['id' => $id]);
+
+        if (!$product) {
+            throw $this->createNotFoundException('product not found');
+        }
         // On vérifie si l'utilisateur peut supprimer avec le Voter
         $this->denyAccessUnlessGranted('PRODUCT_DELETE', $product);
 
@@ -155,8 +166,12 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/suppression/image/{id}', name: 'delete_image', methods: ['DELETE'])]
-    public function deleteImage(Images $image, Request $request, EntityManagerInterface $em, PictureService $pictureService): JsonResponse
+    public function deleteImage(int $id, Request $request, EntityManagerInterface $em, PictureService $pictureService): JsonResponse
     {
+        $image=$em->getRepository(Images::class)->findOneBy(['id' => $id]);
+        if (!$image) {
+            throw $this->createNotFoundException('image not found');
+        }
         // On récupère le contenu de la requête
         $data = json_decode($request->getContent(), true);
 

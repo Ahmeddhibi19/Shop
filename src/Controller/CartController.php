@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Products;
 use App\Repository\ProductsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,9 +35,10 @@ class CartController extends AbstractController
 
 
     #[Route('/add/{id}', name: 'add')]
-    public function add(Products $product, SessionInterface $session)
+    public function add(int $id, SessionInterface $session,EntityManagerInterface $em)
     {
         //On récupère l'id du produit
+        $product = $em->getRepository(Products::class)->findOneBy(['id' =>$id]);
         $id = $product->getId();
 
         // On récupère le panier existant
@@ -57,9 +59,10 @@ class CartController extends AbstractController
     }
 
     #[Route('/remove/{id}', name: 'remove')]
-    public function remove(Products $product, SessionInterface $session)
+    public function remove(int $id, SessionInterface $session,EntityManagerInterface $em)
     {
         //On récupère l'id du produit
+        $product = $em->getRepository(Products::class)->findOneBy(['id' =>$id]);
         $id = $product->getId();
 
         // On récupère le panier existant
@@ -82,9 +85,10 @@ class CartController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete')]
-    public function delete(Products $product, SessionInterface $session)
+    public function delete(int $id, SessionInterface $session,EntityManagerInterface $em)
     {
         //On récupère l'id du produit
+        $product = $em->getRepository(Products::class)->findOneBy(['id' =>$id]);
         $id = $product->getId();
 
         // On récupère le panier existant
